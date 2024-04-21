@@ -12,9 +12,11 @@ db();
 
 app.use(cors());
 app.use(bodyParser.json());
+
 app.get('/', (req, res) => {
   res.send('Hello World with Express');
 });
+
 app.use('/api_v1/person', personRoutes);
 app.use('/api_v1/users', userRoutes);
 app.use('/api_v1/dance', danceRoutes);
