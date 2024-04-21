@@ -21,18 +21,21 @@ const personSchema = new Schema({
   level: {
     type: String,
     required: true,
+    enum: ['novice', 'newcomer', 'associate bronze', 'associate silver', 'associate gold', 'full bronze', 'full silver', 'full gold'],
   },
   studio: {
-    type: String,
-    required: true,
-  },
-  identifier: {
     type: String,
     required: true,
   },
   title: {
     type: String,
     required: true,
+    enum: ['leader', 'follower'],
+  },
+  identifier: {
+    type: String,
+    required: true,
+    enum: ['student', 'coach', 'teacher/professional'],
   },
 });
 
