@@ -1,15 +1,15 @@
-const Dance = require('../models/Dance');
+import Dance from '../models/Dance.js';
 
-exports.getAllDances = async (req, res) => {
+export async function getAllDances(req, res) {
   try {
     const dances = await Dance.find().populate('category');
     res.json(dances);
   } catch (error) {
     res.status(500).send(error);
   }
-};
+}
 
-exports.createDance = async (req, res) => {
+export async function createDance(req, res) {
   try {
     const newDance = new Dance(req.body);
     await newDance.save();
@@ -17,9 +17,9 @@ exports.createDance = async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-};
+}
 
-exports.getDance = async (req, res) => {
+export async function getDance(req, res) {
   try {
     const dance = await Dance.findById(req.params.id).populate('category');
     if (!dance) {
@@ -29,9 +29,9 @@ exports.getDance = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}
 
-exports.updateDance = async (req, res) => {
+export async function updateDance(req, res) {
   try {
     const dance = await Dance.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!dance) {
@@ -41,9 +41,9 @@ exports.updateDance = async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-};
+}
 
-exports.deleteDance = async (req, res) => {
+export async function deleteDance(req, res) {
   try {
     const dance = await Dance.findByIdAndDelete(req.params.id);
     if (!dance) {
@@ -53,4 +53,4 @@ exports.deleteDance = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}

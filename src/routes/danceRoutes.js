@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { getAllDances, createDance, getDance, updateDance, deleteDance } = require('../controllers/danceController');
+import { getAllDances, createDance, getDance, updateDance, deleteDance } from '../controllers/danceController.js';
 
 router.route('/').get(getAllDances).post(createDance);
 
 router.route('/:id').get(getDance).put(updateDance).delete(deleteDance);
 
-module.exports = router;
+export default router;

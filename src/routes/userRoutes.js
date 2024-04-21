@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import { getUserDetails, updateUserDetails } from '../controllers/userController.js';
+
 const router = express.Router();
-const { getUserDetails, updateUserDetails } = require('../controllers/userController');
 
 router.get('/user/:firebaseUid', getUserDetails);
 router.put('/user/:firebaseUid', updateUserDetails);
 
-module.exports = router;
+export default router;

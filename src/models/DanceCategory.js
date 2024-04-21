@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-
 const danceCategorySchema = new Schema({
   name: {
     type: String,
@@ -11,3 +10,5 @@ const danceCategorySchema = new Schema({
 });
 
 const DanceCategory = mongoose.model('DanceCategory', danceCategorySchema);
+
+export default DanceCategory;

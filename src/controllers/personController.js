@@ -1,15 +1,15 @@
-const Person = require('../models/Person');
+import Person from '../models/Person.js';
 
-exports.getAllPeople = async (req, res) => {
+export async function getAllPeople(req, res) {
   try {
     const people = await Person.find();
     res.json(people);
   } catch (error) {
     res.status(500).send(error);
   }
-};
+}
 
-exports.createPerson = async (req, res) => {
+export async function createPerson(req, res) {
   try {
     const newPerson = new Person(req.body);
     await newPerson.save();
@@ -17,9 +17,9 @@ exports.createPerson = async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-};
+}
 
-exports.getPerson = async (req, res) => {
+export async function getPerson(req, res) {
   try {
     const person = await Person.findById(req.params.id);
     if (!person) {
@@ -29,9 +29,9 @@ exports.getPerson = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}
 
-exports.updatePerson = async (req, res) => {
+export async function updatePerson(req, res) {
   try {
     const person = await Person.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!person) {
@@ -41,9 +41,9 @@ exports.updatePerson = async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-};
+}
 
-exports.deletePerson = async (req, res) => {
+export async function deletePerson(req, res) {
   try {
     const person = await Person.findByIdAndDelete(req.params.id);
     if (!person) {
@@ -53,4 +53,4 @@ exports.deletePerson = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}

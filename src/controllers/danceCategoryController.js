@@ -1,15 +1,15 @@
-const DanceCategory = require('../models/DanceCategory');
+import DanceCategory from '../models/DanceCategory.js';
 
-exports.getAllCategories = async (req, res) => {
+export async function getAllCategories(req, res) {
   try {
     const categories = await DanceCategory.find();
     res.json(categories);
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}
 
-exports.createCategory = async (req, res) => {
+export async function createCategory(req, res) {
   try {
     const newCategory = new DanceCategory(req.body);
     await newCategory.save();
@@ -17,9 +17,9 @@ exports.createCategory = async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-};
+}
 
-exports.getCategory = async (req, res) => {
+export async function getCategory(req, res) {
   try {
     const category = await DanceCategory.findById(req.params.id);
     if (!category) {
@@ -29,9 +29,9 @@ exports.getCategory = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}
 
-exports.updateCategory = async (req, res) => {
+export async function updateCategory(req, res) {
   try {
     const category = await DanceCategory.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!category) {
@@ -41,9 +41,9 @@ exports.updateCategory = async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-};
+}
 
-exports.deleteCategory = async (req, res) => {
+export async function deleteCategory(req, res) {
   try {
     const category = await DanceCategory.findByIdAndDelete(req.params.id);
     if (!category) {
@@ -53,4 +53,4 @@ exports.deleteCategory = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}

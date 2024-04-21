@@ -1,6 +1,6 @@
-const User = require('../models/User');
+import User from '../models/User.js';
 
-exports.getUserDetails = async (req, res) => {
+export async function getUserDetails(req, res) {
   try {
     const user = await User.findOne({ firebaseUid: req.params.firebaseUid }).populate('person');
     if (!user) {
@@ -10,9 +10,9 @@ exports.getUserDetails = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}
 
-exports.updateUserDetails = async (req, res) => {
+export async function updateUserDetails(req, res) {
   try {
     const user = await User.findOneAndUpdate({ firebaseUid: req.params.firebaseUid }, req.body, { new: true }).populate('person');
     if (!user) {
@@ -22,4 +22,4 @@ exports.updateUserDetails = async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-};
+}
