@@ -14,23 +14,10 @@ const personSchema = new Schema({
     type: Number,
     required: true,
   },
-  ageCategory: {
-    type: String,
-    required: true,
-  },
-  level: {
-    type: String,
-    required: true,
-    enum: ['novice', 'newcomer', 'associate bronze', 'associate silver', 'associate gold', 'full bronze', 'full silver', 'full gold'],
-  },
   studio: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Studio',
     required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-    enum: ['leader', 'follower'],
   },
   identifier: {
     type: String,
