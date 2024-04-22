@@ -13,7 +13,6 @@ const coupleSchema = new Schema({
   },
   heats: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Heat' }],
-    ref: 'Heat',
   },
 });
 

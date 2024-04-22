@@ -22,9 +22,9 @@ export async function getHeats(req, res) {
         },
       })
       .populate({
-        path: 'dance',
+        path: 'competitions',
         populate: {
-          path: 'category',
+          path: 'danceCategory',
           model: 'DanceCategory',
         },
       });

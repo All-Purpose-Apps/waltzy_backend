@@ -10,7 +10,7 @@ const danceSchema = new Schema({
     type: String,
     trim: true,
   },
-  category: {
+  danceCategory: {
     type: Schema.Types.ObjectId,
     ref: 'DanceCategory',
     required: true,

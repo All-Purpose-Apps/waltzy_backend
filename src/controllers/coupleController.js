@@ -17,7 +17,7 @@ export async function createCouple(req, res) {
 // Get all couples
 export async function getCouples(req, res) {
   try {
-    const couples = await Couple.find().populate('leader follower heat');
+    const couples = await Couple.find().populate('leader follower heats');
     res.json(couples);
   } catch (error) {
     res.status(500).json({ message: 'Failed to get couples', error });
@@ -27,7 +27,7 @@ export async function getCouples(req, res) {
 // Get a single couple by ID
 export async function getCoupleById(req, res) {
   try {
-    const couple = await Couple.findById(req.params.id).populate('leader follower heat');
+    const couple = await Couple.findById(req.params.id).populate('leader follower heats');
     if (!couple) {
       return res.status(404).json({ message: 'Couple not found' });
     }
