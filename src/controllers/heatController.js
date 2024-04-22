@@ -13,7 +13,21 @@ export async function createHeat(req, res) {
 
 export async function getHeats(req, res) {
   try {
-    const heats = await Heat.find().populate(['leader', 'follower', 'dance']).populate({ path: 'dance', populate: 'category' });
+    const heats = await Heat.find()
+      .populate({
+        path: 'couples',
+        populate: {
+          path: 'leader follower',
+          model: 'Person',
+        },
+      })
+      .populate({
+        path: 'dance',
+        populate: {
+          path: 'category',
+          model: 'DanceCategory',
+        },
+      });
     res.json(heats);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching heats', error });
@@ -22,7 +36,21 @@ export async function getHeats(req, res) {
 
 export async function getHeat(req, res) {
   try {
-    const heat = await Heat.findById(req.params.id).populate(['leader', 'follower', 'dance']).populate({ path: 'dance', populate: 'category' });
+    const heat = await Heat.findById(req.params.id)
+      .populate({
+        path: 'couples',
+        populate: {
+          path: 'leader follower',
+          model: 'Person',
+        },
+      })
+      .populate({
+        path: 'dance',
+        populate: {
+          path: 'category',
+          model: 'DanceCategory',
+        },
+      });
     if (!heat) {
       return res.status(404).json({ message: 'Heat not found' });
     }

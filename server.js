@@ -7,6 +7,7 @@ import personRoutes from './src/routes/personRoutes.js';
 import danceRoutes from './src/routes/danceRoutes.js';
 import danceCategoryRoutes from './src/routes/danceCategoryRoutes.js';
 import heatRoutes from './src/routes/heatRoutes.js';
+import coupleRoutes from './src/routes/coupleRoutes.js';
 
 const app = express();
 db();
@@ -23,6 +24,7 @@ app.use('/api_v1/users', userRoutes);
 app.use('/api_v1/dance', danceRoutes);
 app.use('/api_v1/categories', danceCategoryRoutes);
 app.use('/api_v1/heats', heatRoutes);
+app.use('/api_v1/couples', coupleRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server is running on port 3000');
