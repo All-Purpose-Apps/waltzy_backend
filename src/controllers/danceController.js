@@ -2,7 +2,7 @@ import Dance from '../models/Dance.js';
 
 export async function getAllDances(req, res) {
   try {
-    const dances = await Dance.find().populate('category');
+    const dances = await Dance.find().populate('danceCategory');
     res.json(dances);
   } catch (error) {
     res.status(500).send(error);
@@ -33,7 +33,7 @@ export async function getDance(req, res) {
 
 export async function getDancesByCategory(req, res) {
   try {
-    const dance = await Dance.find({ danceCategory: req.params.id }).populate('danceCategory');
+    const dance = await Dance.find({ danceCategory: req.params.id });
     if (!dance) {
       return res.status(404).json({ message: 'Dance Category not found' });
     }
