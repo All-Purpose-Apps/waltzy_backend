@@ -31,6 +31,18 @@ export async function getDance(req, res) {
   }
 }
 
+export async function getDancesByCategory(req, res) {
+  try {
+    const dance = await Dance.find({ category: req.params.id }).populate('category');
+    if (!dance) {
+      return res.status(404).json({ message: 'Dance Category not found' });
+    }
+    res.json(dance);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
 export async function updateDance(req, res) {
   try {
     const dance = await Dance.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
