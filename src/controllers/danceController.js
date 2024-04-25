@@ -1,9 +1,14 @@
 import Dance from '../models/Dance.js';
 
 export async function getAllDances(req, res) {
+  const page = parseInt(req.query._page, 10) || 1;
+  const perPage = parseInt(req.query._limit, 10) || 10;
+  const skip = (page - 1) * perPage;
   try {
     const dances = await Dance.find({})
       .sort([[req.query._sort, req.query._order.toLowerCase()]])
+      .skip(skip)
+      .limit(perPage)
       .populate('danceCategory');
 
     const transformedItems = dances.map((item) => ({
