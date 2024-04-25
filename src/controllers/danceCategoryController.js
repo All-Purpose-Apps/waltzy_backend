@@ -11,7 +11,6 @@ export async function getAllCategories(req, res) {
     res.header('X-Total-Count', `${count}`);
     res.json(transformedItems);
   } catch (error) {
-    console.log(error);
     res.status(500).json(error);
   }
 }
@@ -22,7 +21,6 @@ export async function createCategory(req, res) {
     await newCategory.save();
     res.status(201).json({ id: newCategory._id, ...newCategory._doc });
   } catch (error) {
-    console.log(error);
     res.status(400).json(error);
   }
 }
