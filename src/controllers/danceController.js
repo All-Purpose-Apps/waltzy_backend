@@ -2,8 +2,17 @@ import Dance from '../models/Dance.js';
 
 export async function getAllDances(req, res) {
   try {
-    const dances = await Dance.find().populate('danceCategory');
-    res.json(dances);
+    const dances = await Dance.find({})
+      .sort([[req.query._sort, req.query._order.toLowerCase()]])
+      .populate('danceCategory');
+
+    const transformedItems = dances.map((item) => ({
+      id: item._id, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
+    const count = await Dance.countDocuments();
+    res.header('X-Total-Count', `${count}`);
+    res.json(transformedItems);
   } catch (error) {
     res.status(500).send(error);
   }
