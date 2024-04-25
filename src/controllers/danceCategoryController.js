@@ -2,9 +2,7 @@ import DanceCategory from '../models/DanceCategory.js';
 
 export async function getAllCategories(req, res) {
   try {
-    const results = await DanceCategory.find({})
-      .sort([[req.query._sort, req.query._order.toLowerCase()]])
-      .populate('dances');
+    const results = await DanceCategory.find({}).sort([[req.query._sort, req.query._order.toLowerCase()]]);
     const transformedItems = results.map((item) => ({
       id: item._id, // Map _id to id
       ...item._doc, // Spread the rest of the item

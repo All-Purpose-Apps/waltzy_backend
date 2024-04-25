@@ -2,19 +2,28 @@ import Person from '../models/Person.js';
 
 export async function getAllPeople(req, res) {
   try {
-    const people = await Person.find();
-    res.json(people);
+    const results = await Person.find().sort([[req.query._sort, req.query._order.toLowerCase()]]);
+    const transformedItems = results.map((item) => ({
+      id: item._id, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
+    const count = await Person.countDocuments();
+    res.header('X-Total-Count', `${count}`);
+    res.json(transformedItems);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 }
 
 export async function createPerson(req, res) {
+  console.log(req.body);
   try {
     const newPerson = new Person(req.body);
     await newPerson.save();
-    res.status(201).json(newPerson);
+    res.status(201).json({ id: newPerson._id, ...newPerson._doc });
   } catch (error) {
+    console.log(error);
     res.status(400).json(error);
   }
 }
@@ -25,7 +34,7 @@ export async function getPerson(req, res) {
     if (!person) {
       return res.status(404).json({ message: 'Person not found' });
     }
-    res.json(person);
+    res.json({ id: person._id, ...person._doc });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -37,15 +46,16 @@ export async function updatePerson(req, res) {
     if (!person) {
       return res.status(404).json({ message: 'Person not found' });
     }
-    res.json(person);
+    res.json({ id: person._id, ...person._doc });
   } catch (error) {
     res.status(400).json(error);
   }
 }
 
 export async function deletePerson(req, res) {
+  const resultArray = req.params.id.split(',');
   try {
-    const person = await Person.findByIdAndDelete(req.params.id);
+    const person = await Person.deleteMany({ _id: { $in: resultArray } });
     if (!person) {
       return res.status(404).json({ message: 'Person not found' });
     }
