@@ -19,10 +19,11 @@ export async function getAllDances(req, res) {
 }
 
 export async function createDance(req, res) {
+  console.log(req.body);
   try {
     const newDance = new Dance(req.body);
     await newDance.save();
-    res.status(201).json(newDance);
+    res.status(201).json({ id: newDance._id, ...newDance._doc });
   } catch (error) {
     res.status(400).json(error);
   }
@@ -34,7 +35,7 @@ export async function getDance(req, res) {
     if (!dance) {
       return res.status(404).json({ message: 'Dance not found' });
     }
-    res.json(dance);
+    res.json({ id: dance._id, ...dance._doc });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -43,10 +44,15 @@ export async function getDance(req, res) {
 export async function getDancesByCategory(req, res) {
   try {
     const dance = await Dance.find({ danceCategory: req.params.id });
+    const transformedItems = dance.map((item) => ({
+      id: item._id, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
     if (!dance) {
       return res.status(404).json({ message: 'Dance Category not found' });
     }
-    res.json(dance);
+
+    res.json({ data: transformedItems, total: transformedItems.length });
   } catch (error) {
     res.status(500).json(error);
   }
