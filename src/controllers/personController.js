@@ -1,8 +1,16 @@
 import Person from '../models/Person.js';
 
 export async function getAllPeople(req, res) {
+  const page = parseInt(req.query._page, 10) || 1;
+  const perPage = parseInt(req.query._limit, 10) || 10;
+  const skip = (page - 1) * perPage;
+  const sortField = req.query._sort.split('.')[0] || 'firstName'; // Default sort field
+  const sortOrder = req.query._order === 'DESC' ? -1 : 1;
+  const sortOptions = {};
+  sortOptions[sortField] = sortOrder;
+
   try {
-    const results = await Person.find().sort([[req.query._sort, req.query._order.toLowerCase()]]);
+    const results = await Person.find().sort(sortOptions).skip(skip).limit(perPage);
     const transformedItems = results.map((item) => ({
       id: item._id, // Map _id to id
       ...item._doc, // Spread the rest of the item

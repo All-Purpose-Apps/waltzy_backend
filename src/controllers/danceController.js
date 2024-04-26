@@ -4,12 +4,12 @@ export async function getAllDances(req, res) {
   const page = parseInt(req.query._page, 10) || 1;
   const perPage = parseInt(req.query._limit, 10) || 10;
   const skip = (page - 1) * perPage;
+  const sortField = req.query._sort.split('.')[0] || 'name'; // Default sort field
+  const sortOrder = req.query._order === 'DESC' ? -1 : 1;
+  const sortOptions = {};
+  sortOptions[sortField] = sortOrder;
   try {
-    const dances = await Dance.find({})
-      .sort([[req.query._sort, req.query._order.toLowerCase()]])
-      .skip(skip)
-      .limit(perPage)
-      .populate('danceCategory');
+    const dances = await Dance.find({}).sort(sortOptions).skip(skip).limit(perPage).populate('danceCategory');
 
     const transformedItems = dances.map((item) => ({
       id: item._id, // Map _id to id
