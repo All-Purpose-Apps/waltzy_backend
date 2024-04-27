@@ -18,7 +18,11 @@ export async function getAllDances(req, res) {
     const count = await Dance.countDocuments();
     res.header('X-Total-Count', `${count}`);
     res.json(transformedItems);
+    // const results = await Dance.find({}).populate('danceCategory');
+    // res.json(results);
+    // console.log(results);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 }

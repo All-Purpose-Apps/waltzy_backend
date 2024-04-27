@@ -29,7 +29,6 @@ const coupleSchema = new Schema({
   heat: {
     type: Schema.Types.ObjectId,
     ref: 'Heat',
-    required: true,
   },
   scores: {
     type: [Number],

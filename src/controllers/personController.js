@@ -8,7 +8,6 @@ export async function getAllPeople(req, res) {
   const sortOrder = req.query._order === 'DESC' ? -1 : 1;
   const sortOptions = {};
   sortOptions[sortField] = sortOrder;
-
   try {
     const results = await Person.find().sort(sortOptions).skip(skip).limit(perPage);
     const transformedItems = results.map((item) => ({
@@ -17,6 +16,22 @@ export async function getAllPeople(req, res) {
     }));
     const count = await Person.countDocuments();
     res.header('X-Total-Count', `${count}`);
+    res.json(transformedItems);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+}
+
+export async function getMultiplePeople(req, res) {
+  console.log(req.query.id);
+  const resultArray = req.query.id.split(',');
+  try {
+    const results = await Person.find({ _id: { $in: resultArray } });
+    const transformedItems = results.map((item) => ({
+      id: item._id, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
     res.json(transformedItems);
   } catch (error) {
     console.log(error);

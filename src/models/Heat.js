@@ -10,6 +10,14 @@ const heatSchema = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Dance' }],
     required: true,
   },
+  date: {
+    type: Date,
+    required: true,
+  },
+  time: {
+    type: String,
+    required: true,
+  },
 });
 
 function arrayLimit(val) {
