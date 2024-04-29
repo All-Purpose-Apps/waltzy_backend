@@ -28,7 +28,6 @@ export async function getAllDances(req, res) {
 }
 
 export async function createDance(req, res) {
-  console.log(req.body);
   try {
     const newDance = new Dance(req.body);
     await newDance.save();
@@ -39,13 +38,22 @@ export async function createDance(req, res) {
 }
 
 export async function getDance(req, res) {
+  const resultArray = req.params.id.split(',');
   try {
-    const dance = await Dance.findById(req.params.id).populate('danceCategory');
-    if (!dance) {
+    const results = await Dance.find({ _id: { $in: resultArray } }).populate({
+      path: 'danceCategory',
+      model: 'DanceCategory',
+    });
+    if (!results) {
       return res.status(404).json({ message: 'Dance not found' });
     }
-    res.json({ id: dance._id, ...dance._doc });
+    const transformedItems = results.map((item) => ({
+      id: item._id, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
+    res.json(transformedItems);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 }
@@ -54,7 +62,6 @@ export async function getDancesByCategory(req, res) {
   try {
     const dance = await Dance.find({ danceCategory: req.params.id });
     const transformedItems = dance.map((item) => ({
-      id: item._id, // Map _id to id
       ...item._doc, // Spread the rest of the item
     }));
     if (!dance) {

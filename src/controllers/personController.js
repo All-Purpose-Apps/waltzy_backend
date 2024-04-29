@@ -24,7 +24,7 @@ export async function getAllPeople(req, res) {
 }
 
 export async function getMultiplePeople(req, res) {
-  console.log(req.query.id);
+  console.log('getMultiplePeople');
   const resultArray = req.query.id.split(',');
   try {
     const results = await Person.find({ _id: { $in: resultArray } });
@@ -52,13 +52,19 @@ export async function createPerson(req, res) {
 }
 
 export async function getPerson(req, res) {
+  const resultArray = req.params.id.split(',');
   try {
-    const person = await Person.findById(req.params.id);
-    if (!person) {
+    const results = await Person.find({ _id: { $in: resultArray } });
+    if (!results) {
       return res.status(404).json({ message: 'Person not found' });
     }
-    res.json({ id: person._id, ...person._doc });
+    const transformedItems = results.map((item) => ({
+      id: item._id, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
+    res.json(transformedItems);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 }

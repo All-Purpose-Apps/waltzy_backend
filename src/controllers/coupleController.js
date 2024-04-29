@@ -5,14 +5,16 @@ export async function createCouple(req, res) {
   try {
     const newCouple = new Couple(req.body);
     const savedCouple = await newCouple.save();
-    res.status(201).json(savedCouple);
+    res.status(201).json({ id: savedCouple._id, ...savedCouple._doc });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: 'Failed to create couple', error });
   }
 }
 
 // Get all couples
 export async function getCouples(req, res) {
+  console.log(req.params);
   try {
     const couples = await Couple.find()
       .sort([[req.query._sort, req.query._order.toLowerCase()]])
@@ -32,10 +34,6 @@ export async function getCouples(req, res) {
           path: 'danceCategory',
           model: 'DanceCategory',
         },
-      })
-      .populate({
-        path: 'heat', // Assuming 'heat' refers to another model that needs to be populated
-        model: 'Heat',
       });
     const transformedItems = couples.map((item) => ({
       id: item._id, // Map _id to id
@@ -69,10 +67,6 @@ export async function getCoupleById(req, res) {
           path: 'danceCategory',
           model: 'DanceCategory',
         },
-      })
-      .populate({
-        path: 'heat', // Assuming 'heat' refers to another model that needs to be populated
-        model: 'Heat',
       });
     if (!couple) {
       return res.status(404).json({ message: 'Couple not found' });
@@ -85,6 +79,7 @@ export async function getCoupleById(req, res) {
 
 // Update a couple
 export async function updateCouple(req, res) {
+  console.log(req.body);
   try {
     const updatedCouple = await Couple.findByIdAndUpdate(
       req.params.id,

@@ -2,11 +2,13 @@ import DanceCategory from '../models/DanceCategory.js';
 import Heat from '../models/Heat.js';
 
 export async function createHeat(req, res) {
+  console.log(req.body);
   try {
     const newHeat = new Heat(req.body);
     await newHeat.save();
     res.status(201).json(newHeat);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: 'Error creating heat', error });
   }
 }
@@ -14,48 +16,55 @@ export async function createHeat(req, res) {
 export async function getHeats(req, res) {
   try {
     const heats = await Heat.find()
+      .sort([[req.query._sort, req.query._order.toLowerCase()]])
       .populate({
         path: 'couples',
-        populate: {
-          path: 'leader follower',
-          model: 'Person',
-        },
-      })
-      .populate({
-        path: 'competitions',
-        populate: {
-          path: 'danceCategory',
-          model: 'DanceCategory',
-        },
+        populate: [
+          { path: 'leader', model: 'Person' },
+          { path: 'follower', model: 'Person' },
+          {
+            path: 'dance',
+            model: 'Dance',
+            populate: { path: 'danceCategory', model: 'DanceCategory' },
+          },
+        ],
       });
-    res.json(heats);
+    const transformedItems = heats.map((item) => ({
+      id: item._id,
+      competitions: item.competitions, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
+    const count = await Heat.countDocuments();
+    res.header('X-Total-Count', `${count}`);
+    res.json(transformedItems);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Error fetching heats', error });
   }
 }
 
 export async function getHeat(req, res) {
   try {
-    const heat = await Heat.findById(req.params.id)
-      .populate({
-        path: 'couples',
-        populate: {
-          path: 'leader follower',
-          model: 'Person',
+    const heat = await Heat.findById(req.params.id).populate({
+      path: 'couples',
+      populate: [
+        { path: 'leader', model: 'Person' },
+        { path: 'follower', model: 'Person' },
+        {
+          path: 'dance',
+          model: 'Dance',
+          populate: { path: 'danceCategory', model: 'DanceCategory' },
         },
-      })
-      .populate({
-        path: 'dance',
-        populate: {
-          path: 'category',
-          model: 'DanceCategory',
-        },
-      });
+      ],
+    });
+
     if (!heat) {
       return res.status(404).json({ message: 'Heat not found' });
     }
-    res.json(heat);
+    const newHeat = { ...heat._doc, competitions: heat.competitions, id: heat._id };
+    res.json(newHeat);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Error fetching heat', error });
   }
 }

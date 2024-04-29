@@ -6,6 +6,6 @@ router.route('/').get(getAllPeople).post(createPerson);
 
 router.route('/:id').get(getPerson).put(updatePerson).delete(deletePerson);
 
-router.route('/multiple').get(getMultiplePeople);
+router.route('/multiple/').get(getMultiplePeople);
 
 export default router;

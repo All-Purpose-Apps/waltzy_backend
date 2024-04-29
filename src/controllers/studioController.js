@@ -28,12 +28,17 @@ export async function createStudio(req, res) {
 }
 
 export async function getStudio(req, res) {
+  const resultArray = req.params.id.split(',');
   try {
-    const studio = await Studio.findById(req.params.id);
-    if (!studio) {
+    const results = await Studio.find({ _id: { $in: resultArray } });
+    if (!results) {
       return res.status(404).json({ message: 'Studio not found' });
     }
-    res.json({ id: studio._id, ...studio._doc });
+    const transformedItems = results.map((item) => ({
+      id: item._id, // Map _id to id
+      ...item._doc, // Spread the rest of the item
+    }));
+    res.json(transformedItems);
   } catch (error) {
     console.error(error);
     res.status(500).json(error);
