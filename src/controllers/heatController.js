@@ -2,11 +2,13 @@ import DanceCategory from '../models/DanceCategory.js';
 import Heat from '../models/Heat.js';
 
 export async function createHeat(req, res) {
-  console.log(req.body);
   try {
     const newHeat = new Heat(req.body);
     await newHeat.save();
-    res.status(201).json(newHeat);
+    res.status(201).json({
+      id: newHeat._id,
+      ...newHeat._doc, // Spread the rest of the item
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: 'Error creating heat', error });
@@ -31,7 +33,6 @@ export async function getHeats(req, res) {
       });
     const transformedItems = heats.map((item) => ({
       id: item._id,
-      competitions: item.competitions, // Map _id to id
       ...item._doc, // Spread the rest of the item
     }));
     const count = await Heat.countDocuments();
@@ -61,7 +62,7 @@ export async function getHeat(req, res) {
     if (!heat) {
       return res.status(404).json({ message: 'Heat not found' });
     }
-    const newHeat = { ...heat._doc, competitions: heat.competitions, id: heat._id };
+    const newHeat = { ...heat._doc, id: heat._id };
     res.json(newHeat);
   } catch (error) {
     console.log(error);
@@ -82,13 +83,15 @@ export async function updateHeat(req, res) {
 }
 
 export async function deleteHeat(req, res) {
+  const resultArray = req.params.id.split(',');
   try {
-    const deletedHeat = await Heat.findByIdAndDelete(req.params.id);
+    const deletedHeat = await Heat.deleteMany({ _id: { $in: resultArray } });
     if (!deletedHeat) {
       return res.status(404).json({ message: 'Heat not found' });
     }
     res.json({ message: 'Heat deleted successfully' });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Error deleting heat', error });
   }
 }

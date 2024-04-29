@@ -14,7 +14,6 @@ export async function createCouple(req, res) {
 
 // Get all couples
 export async function getCouples(req, res) {
-  console.log(req.params);
   try {
     const couples = await Couple.find()
       .sort([[req.query._sort, req.query._order.toLowerCase()]])
@@ -49,8 +48,10 @@ export async function getCouples(req, res) {
 
 // Get a single couple by ID
 export async function getCoupleById(req, res) {
+  const resultArray = req.params.id.split(',');
+
   try {
-    const couple = await Couple.findById(req.params.id)
+    const couple = await Couple.find({ _id: { $in: resultArray } })
       .populate({
         path: 'leader', // assuming 'leader' refers to a Person model
         model: 'Person',
@@ -71,7 +72,11 @@ export async function getCoupleById(req, res) {
     if (!couple) {
       return res.status(404).json({ message: 'Couple not found' });
     }
-    res.json({ id: couple._id, ...couple._doc });
+    const transformedItems = couple.map((item) => ({
+      id: item._id,
+      ...item._doc, // Spread the rest of the item
+    }));
+    res.json(transformedItems);
   } catch (error) {
     res.status(500).json({ message: 'Failed to get couple', error });
   }
@@ -79,29 +84,26 @@ export async function getCoupleById(req, res) {
 
 // Update a couple
 export async function updateCouple(req, res) {
-  console.log(req.body);
   try {
-    const updatedCouple = await Couple.findByIdAndUpdate(
-      req.params.id,
-      {
-        leader: req.body.leader,
-        follower: req.body.follower,
-      },
-      { new: true }
-    );
+    const updatedCouple = await Couple.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedCouple) {
       return res.status(404).json({ message: 'Couple not found' });
     }
-    res.json(updatedCouple);
+    res.json({
+      id: updatedCouple._id,
+      ...updatedCouple._doc, // Spread the rest of the item
+    });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: 'Failed to update couple', error });
   }
 }
 
 // Delete a couple
 export async function deleteCouple(req, res) {
+  const resultArray = req.params.id.split(',');
   try {
-    const deletedCouple = await Couple.findByIdAndDelete(req.params.id);
+    const deletedCouple = await Couple.deleteMany({ _id: { $in: resultArray } });
     if (!deletedCouple) {
       return res.status(404).json({ message: 'Couple not found' });
     }
