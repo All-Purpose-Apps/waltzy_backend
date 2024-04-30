@@ -24,7 +24,6 @@ export async function getAllPeople(req, res) {
 }
 
 export async function getMultiplePeople(req, res) {
-  console.log('getMultiplePeople');
   const resultArray = req.query.id.split(',');
   try {
     const results = await Person.find({ _id: { $in: resultArray } });
@@ -40,7 +39,6 @@ export async function getMultiplePeople(req, res) {
 }
 
 export async function createPerson(req, res) {
-  console.log(req.body);
   try {
     const newPerson = new Person(req.body);
     await newPerson.save();

@@ -31,10 +31,13 @@ export async function getHeats(req, res) {
           },
         ],
       });
-    const transformedItems = heats.map((item) => ({
-      id: item._id,
-      ...item._doc, // Spread the rest of the item
-    }));
+    const transformedItems = heats.map((item, index) => {
+      return {
+        number: index + 1,
+        id: item._id,
+        ...item._doc, // Spread the rest of the item
+      };
+    });
     const count = await Heat.countDocuments();
     res.header('X-Total-Count', `${count}`);
     res.json(transformedItems);
