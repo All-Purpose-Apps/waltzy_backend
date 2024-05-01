@@ -1,4 +1,5 @@
 import express from 'express';
+import expressListRoutes from 'express-list-routes';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import db from './src/config/db.js';

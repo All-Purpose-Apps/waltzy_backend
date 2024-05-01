@@ -23,6 +23,9 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.19.2
+      express-list-routes:
+        specifier: ^1.2.1
+        version: 1.2.1
       express-mongoose-ra-json-server:
         specifier: ^0.2.2
         version: 0.2.2(express@4.19.2)(mongoose@8.3.2(gcp-metadata@6.1.0))
@@ -433,6 +436,9 @@ packages:
   expand-template@2.0.3:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
     engines: {node: '>=6'}
+
+  express-list-routes@1.2.1:
+    resolution: {integrity: sha512-vGO542ykRMd2g16HvVMpcLvozBmHLPvy02yi/PT/mcx/kcDwoyIvABGjpuxNBOSAfYbtl+fYck921c1Skc/gkg==}
 
   express-mongoose-ra-json-server@0.2.2:
     resolution: {integrity: sha512-LxlCdhp6q94Llv+Nirgtcxoo7P7kG7y1G07cvGOrAAGMaUgYhvC0z1AO/fxyeQdmaUY3lC4VszxfP1NVOWNc+w==}
@@ -1594,6 +1600,8 @@ snapshots:
     optional: true
 
   expand-template@2.0.3: {}
+
+  express-list-routes@1.2.1: {}
 
   express-mongoose-ra-json-server@0.2.2(express@4.19.2)(mongoose@8.3.2(gcp-metadata@6.1.0)):
     dependencies:
