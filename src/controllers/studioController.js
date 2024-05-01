@@ -1,4 +1,5 @@
 import Studio from '../models/Studio.js';
+import Person from '../models/Person.js';
 
 export async function getAllStudios(req, res) {
   try {
@@ -60,12 +61,18 @@ export async function updateStudio(req, res) {
 export async function deleteStudio(req, res) {
   const resultArray = req.params.id.split(',');
   try {
-    const studio = await Studio.deleteMany({ _id: { $in: resultArray } });
-    if (!studio) {
-      return res.status(404).json({ message: 'Studio not found' });
+    const peopleInStudio = await Person.find({ studio: { $in: resultArray } });
+    if (peopleInStudio.length > 0) {
+      return res.status(400).json({ message: 'Cannot delete studio with people in it' });
+    } else {
+      const studio = await Studio.deleteMany({ _id: { $in: resultArray } });
+      if (!studio) {
+        return res.status(404).json({ message: 'Studio not found' });
+      }
     }
     res.json({ message: 'Studio deleted successfully' });
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 }
