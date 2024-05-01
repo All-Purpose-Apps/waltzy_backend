@@ -62,12 +62,12 @@ export async function getDancesByCategory(req, res) {
   try {
     const dance = await Dance.find({ danceCategory: req.params.id });
     const transformedItems = dance.map((item) => ({
+      id: item._id, // Map _id to id
       ...item._doc, // Spread the rest of the item
     }));
     if (!dance) {
       return res.status(404).json({ message: 'Dance Category not found' });
     }
-
     res.json({ data: transformedItems, total: transformedItems.length });
   } catch (error) {
     res.status(500).json(error);
