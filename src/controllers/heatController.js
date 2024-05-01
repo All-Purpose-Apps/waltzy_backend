@@ -16,9 +16,14 @@ export async function createHeat(req, res) {
 }
 
 export async function getHeats(req, res) {
+  const page = parseInt(req.query._page, 10) || 1;
+  const perPage = parseInt(req.query._limit, 10) || 10;
+  const skip = (page - 1) * perPage;
   try {
     const heats = await Heat.find()
-      .sort([[req.query._sort, req.query._order.toLowerCase()]])
+      .sort([['dateTime', 'asc']])
+      .skip(skip)
+      .limit(perPage)
       .populate({
         path: 'couples',
         populate: [

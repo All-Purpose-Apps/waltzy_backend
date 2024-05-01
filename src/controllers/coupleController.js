@@ -14,6 +14,7 @@ export async function createCouple(req, res) {
 
 // Get all couples
 export async function getCouples(req, res) {
+  // console.log('getCouples');
   try {
     const couples = await Couple.find()
       .sort([[req.query._sort, req.query._order.toLowerCase()]])
@@ -35,7 +36,7 @@ export async function getCouples(req, res) {
         },
       });
     const transformedItems = couples.map((item) => ({
-      id: item._id, // Map _id to id
+      id: item._id.toString(), // Map _id to id
       ...item._doc, // Spread the rest of the item
     }));
     const count = await Couple.countDocuments();
@@ -48,8 +49,7 @@ export async function getCouples(req, res) {
 
 // Get a single couple by ID
 export async function getCoupleById(req, res) {
-  const resultArray = req.params.id.split(',');
-
+  const resultArray = req.params.id.split(',').filter((id) => id.trim() !== '');
   try {
     const couple = await Couple.find({ _id: { $in: resultArray } })
       .populate({
