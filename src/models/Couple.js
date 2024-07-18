@@ -26,8 +26,8 @@ const coupleSchema = new Schema({
     required: true,
     enum: ['novice', 'newcomer', 'associate bronze', 'associate silver', 'associate gold', 'full bronze', 'full silver', 'full gold'],
   },
-  heat: {
-    type: Schema.Types.ObjectId,
+  heats: {
+    type: [Schema.Types.ObjectId],
     ref: 'Heat',
   },
   scores: {

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Person from './Person.js';
 
 const studioSchema = new mongoose.Schema({
   name: {
@@ -52,6 +53,10 @@ const studioSchema = new mongoose.Schema({
   },
   studioManagerEmail: {
     type: String,
+  },
+  associatedDancers: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: Person,
   },
 });
 

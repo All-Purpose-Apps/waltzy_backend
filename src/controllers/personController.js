@@ -1,22 +1,10 @@
 import Person from '../models/Person.js';
+import Couple from '../models/Couple.js';
 
 export async function getAllPeople(req, res) {
-  const page = parseInt(req.query._page, 10) || 1;
-  const perPage = parseInt(req.query._limit, 10) || 10;
-  const skip = (page - 1) * perPage;
-  const sortField = req.query._sort.split('.')[0] || 'firstName'; // Default sort field
-  const sortOrder = req.query._order === 'DESC' ? -1 : 1;
-  const sortOptions = {};
-  sortOptions[sortField] = sortOrder;
   try {
-    const results = await Person.find().sort(sortOptions).skip(skip).limit(perPage);
-    const transformedItems = results.map((item) => ({
-      id: item._id, // Map _id to id
-      ...item._doc, // Spread the rest of the item
-    }));
-    const count = await Person.countDocuments();
-    res.header('X-Total-Count', `${count}`);
-    res.json(transformedItems);
+    const results = await Person.find().populate('studio');
+    res.json(results);
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -42,7 +30,7 @@ export async function createPerson(req, res) {
   try {
     const newPerson = new Person(req.body);
     await newPerson.save();
-    res.status(201).json({ id: newPerson._id, ...newPerson._doc });
+    res.status(201).json(newPerson);
   } catch (error) {
     console.log(error);
     res.status(400).json(error);
@@ -52,15 +40,11 @@ export async function createPerson(req, res) {
 export async function getPerson(req, res) {
   const resultArray = req.params.id.split(',');
   try {
-    const results = await Person.find({ _id: { $in: resultArray } });
+    const results = await Person.find({ _id: { $in: resultArray } }).populate('studio');
     if (!results) {
       return res.status(404).json({ message: 'Person not found' });
     }
-    const transformedItems = results.map((item) => ({
-      id: item._id, // Map _id to id
-      ...item._doc, // Spread the rest of the item
-    }));
-    res.json(transformedItems);
+    res.json(results);
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -80,13 +64,19 @@ export async function updatePerson(req, res) {
 }
 
 export async function deletePerson(req, res) {
-  const resultArray = req.params.id.split(',');
   try {
-    const person = await Person.deleteMany({ _id: { $in: resultArray } });
+    const existingCouples = await Couple.find({
+      $or: [{ follower: { $in: req.params.id } }, { leader: { $in: req.params.id } }],
+    });
+    if (existingCouples.length > 0) {
+      return res.status(400).json({ message: 'Cannot delete person as they are part of a couple' });
+    }
+    const person = await Person.deleteMany({ _id: { $in: req.params.id } });
     if (!person) {
       return res.status(404).json({ message: 'Person not found' });
     }
-    res.json({ message: 'Person deleted successfully' });
+    const results = await Person.find().populate('studio');
+    res.json(results);
   } catch (error) {
     res.status(500).json(error);
   }

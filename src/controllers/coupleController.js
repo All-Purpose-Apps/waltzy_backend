@@ -4,8 +4,29 @@ import Couple from '../models/Couple.js';
 export async function createCouple(req, res) {
   try {
     const newCouple = new Couple(req.body);
-    const savedCouple = await newCouple.save();
-    res.status(201).json({ id: savedCouple._id, ...savedCouple._doc });
+    if (!newCouple) {
+      return res.status(400).json({ message: 'Couple not created' });
+    }
+    await newCouple.save();
+    const couples = await Couple.find()
+      .populate({
+        path: 'leader', // assuming 'leader' refers to a Person model
+        model: 'Person',
+      })
+      .populate({
+        path: 'follower', // assuming 'follower' also refers to a Person model
+        model: 'Person',
+      })
+      .populate({
+        path: 'dance',
+        model: 'Dance',
+        populate: {
+          // Nested populate for 'danceCategory' within 'dance'
+          path: 'danceCategory',
+          model: 'DanceCategory',
+        },
+      });
+    res.status(201).json(couples);
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: 'Failed to create couple', error });
@@ -14,10 +35,8 @@ export async function createCouple(req, res) {
 
 // Get all couples
 export async function getCouples(req, res) {
-  // console.log('getCouples');
   try {
     const couples = await Couple.find()
-      .sort([[req.query._sort, req.query._order.toLowerCase()]])
       .populate({
         path: 'leader', // assuming 'leader' refers to a Person model
         model: 'Person',
@@ -43,15 +62,15 @@ export async function getCouples(req, res) {
     res.header('X-Total-Count', `${count}`);
     res.json(transformedItems);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Failed to get couples', error });
   }
 }
 
 // Get a single couple by ID
 export async function getCoupleById(req, res) {
-  const resultArray = req.params.id.split(',').filter((id) => id.trim() !== '');
   try {
-    const couple = await Couple.find({ _id: { $in: resultArray } })
+    const couple = await Couple.find({ _id: { $in: req.params.id } })
       .populate({
         path: 'leader', // assuming 'leader' refers to a Person model
         model: 'Person',
@@ -72,12 +91,9 @@ export async function getCoupleById(req, res) {
     if (!couple) {
       return res.status(404).json({ message: 'Couple not found' });
     }
-    const transformedItems = couple.map((item) => ({
-      id: item._id,
-      ...item._doc, // Spread the rest of the item
-    }));
-    res.json(transformedItems);
+    res.json(couple);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Failed to get couple', error });
   }
 }
@@ -101,13 +117,30 @@ export async function updateCouple(req, res) {
 
 // Delete a couple
 export async function deleteCouple(req, res) {
-  const resultArray = req.params.id.split(',');
   try {
-    const deletedCouple = await Couple.deleteMany({ _id: { $in: resultArray } });
+    const deletedCouple = await Couple.findByIdAndDelete(req.params.id);
     if (!deletedCouple) {
       return res.status(404).json({ message: 'Couple not found' });
     }
-    res.json({ message: 'Couple deleted successfully' });
+    const couples = await Couple.find()
+      .populate({
+        path: 'leader', // assuming 'leader' refers to a Person model
+        model: 'Person',
+      })
+      .populate({
+        path: 'follower', // assuming 'follower' also refers to a Person model
+        model: 'Person',
+      })
+      .populate({
+        path: 'dance',
+        model: 'Dance',
+        populate: {
+          // Nested populate for 'danceCategory' within 'dance'
+          path: 'danceCategory',
+          model: 'DanceCategory',
+        },
+      });
+    res.status(201).json(couples);
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete couple', error });
   }

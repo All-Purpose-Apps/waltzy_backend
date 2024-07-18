@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 
 app.use('/api_v1/danceCategory', danceCategoryRoutes);
 app.use('/api_v1/dances', danceRoutes);
-app.use('/api_v1/person', personRoutes);
+app.use('/api_v1/dancers', personRoutes);
 app.use('/api_v1/studios', studioRoutes);
 app.use('/api_v1/users', userRoutes);
 app.use('/api_v1/heats', heatRoutes);
