@@ -5,10 +5,19 @@ export async function createHeat(req, res) {
   try {
     const newHeat = new Heat(req.body);
     await newHeat.save();
-    res.status(201).json({
-      id: newHeat._id,
-      ...newHeat._doc, // Spread the rest of the item
+    const heats = await Heat.find().populate({
+      path: 'couples',
+      populate: [
+        { path: 'leader', model: 'Person' },
+        { path: 'follower', model: 'Person' },
+        {
+          path: 'dance',
+          model: 'Dance',
+          populate: { path: 'danceCategory', model: 'DanceCategory' },
+        },
+      ],
     });
+    res.json(heats);
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: 'Error creating heat', error });
@@ -16,36 +25,20 @@ export async function createHeat(req, res) {
 }
 
 export async function getHeats(req, res) {
-  const page = parseInt(req.query._page, 10) || 1;
-  const perPage = parseInt(req.query._limit, 10) || 10;
-  const skip = (page - 1) * perPage;
   try {
-    const heats = await Heat.find()
-      .sort([['dateTime', 'asc']])
-      .skip(skip)
-      .limit(perPage)
-      .populate({
-        path: 'couples',
-        populate: [
-          { path: 'leader', model: 'Person' },
-          { path: 'follower', model: 'Person' },
-          {
-            path: 'dance',
-            model: 'Dance',
-            populate: { path: 'danceCategory', model: 'DanceCategory' },
-          },
-        ],
-      });
-    const transformedItems = heats.map((item, index) => {
-      return {
-        number: index + 1,
-        id: item._id,
-        ...item._doc, // Spread the rest of the item
-      };
+    const heats = await Heat.find().populate({
+      path: 'couples',
+      populate: [
+        { path: 'leader', model: 'Person' },
+        { path: 'follower', model: 'Person' },
+        {
+          path: 'dance',
+          model: 'Dance',
+          populate: { path: 'danceCategory', model: 'DanceCategory' },
+        },
+      ],
     });
-    const count = await Heat.countDocuments();
-    res.header('X-Total-Count', `${count}`);
-    res.json(transformedItems);
+    res.json(heats);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error fetching heats', error });
@@ -97,7 +90,19 @@ export async function deleteHeat(req, res) {
     if (!deletedHeat) {
       return res.status(404).json({ message: 'Heat not found' });
     }
-    res.json({ message: 'Heat deleted successfully' });
+    const heats = await Heat.find().populate({
+      path: 'couples',
+      populate: [
+        { path: 'leader', model: 'Person' },
+        { path: 'follower', model: 'Person' },
+        {
+          path: 'dance',
+          model: 'Dance',
+          populate: { path: 'danceCategory', model: 'DanceCategory' },
+        },
+      ],
+    });
+    res.json(heats);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error deleting heat', error });

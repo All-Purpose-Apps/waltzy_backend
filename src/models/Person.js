@@ -22,7 +22,7 @@ const personSchema = new Schema({
   identifier: {
     type: String,
     required: true,
-    enum: ['student', 'coach', 'teacher/professional'],
+    enum: ['student', 'coach', 'professional'],
   },
 });
 
