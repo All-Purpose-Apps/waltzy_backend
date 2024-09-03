@@ -1,0 +1,26 @@
+{
+  "name": "waltzy_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon --signal SIGTERM -r dotenv/config src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "continuation-local-storage": "^3.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "env": "^0.0.2",
+    "express": "^4.19.2",
+    "express-list-routes": "^1.2.2",
+    "helmet": "^3.23.3",
+    "log4js": "^6.9.1",
+    "mongoose": "^5.13.22",
+    "nodemon": "^3.1.4"
+  }
+}
