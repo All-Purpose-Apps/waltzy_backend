@@ -2,10 +2,9 @@ export async function getAllDances(adminDbConnection) {
   try {
     const Dance = await adminDbConnection.model('Dance');
     const dances = await Dance.find({}).populate('danceCategory');
-    console.log('getAllDances dances', dances);
     return dances;
   } catch (error) {
-    console.log('getAllDances error', error);
+    console.log(error);
     throw error;
   }
 }
