@@ -14,8 +14,6 @@ import { router } from './api/routes.js';
 
 // Express app instance
 const app = express();
-const PORT = 3000;
-app.set('port', PORT);
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
 
@@ -49,6 +47,6 @@ router(app);
 // List all routes
 // expressListRoutes(app);
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log(`Express server started at port: ${PORT}`);
 });
