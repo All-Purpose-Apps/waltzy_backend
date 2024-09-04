@@ -17,6 +17,8 @@ const app = express();
 const PORT = 3000;
 app.set('port', PORT);
 
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
 // helmet for security purpose
 app.use(helmet());
 
@@ -29,6 +31,7 @@ app.use(
   cors({
     origin: process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : 'https://compman.netlify.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
   })
 );
 
