@@ -2,10 +2,9 @@ export async function getAllStudios(adminDbConnection) {
   try {
     const Studio = await adminDbConnection.model('Studio');
     const studios = await Studio.find({});
-    console.log('getAllStudios studios', studios);
     return studios;
   } catch (error) {
-    console.log('getAllStudios error', error);
+    console.error(error);
     throw error;
   }
 }
@@ -18,7 +17,7 @@ export async function createStudio(adminDbConnection, req, res) {
     const studios = await Studio.find({});
     return studios;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -36,6 +35,7 @@ export async function getStudio(adminDbConnection, req, res) {
     return studio;
   } catch (error) {
     console.error(error);
+    console.error(error);
     throw error;
   }
 }
@@ -49,6 +49,7 @@ export async function updateStudio(adminDbConnection, req, res) {
     }
     return studio._doc;
   } catch (error) {
+    console.error(error);
     throw error;
   }
 }
@@ -69,7 +70,7 @@ export async function deleteStudio(adminDbConnection, req, res) {
     const studios = await Studio.find({});
     return studios;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
