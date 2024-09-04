@@ -25,7 +25,11 @@ const appLogger = log4js.getLogger();
 app.use(log4js.connectLogger(appLogger));
 
 // CORS - To hanlde cross origin requests
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : 'https://compman.netlify.app',
+  })
+);
 
 // Parsing the body of the http
 app.use(bodyParser.urlencoded({ extended: false }));
