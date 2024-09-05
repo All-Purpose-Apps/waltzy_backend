@@ -31,7 +31,7 @@ const heatSchema = new mongoose.Schema({
   },
 });
 
-heatSchema.index({ entries: 1, dance: 1, ageCategory: 1, level: 1 }, { unique: true });
+heatSchema.index({ number: 1, entries: 1, dance: 1, ageCategory: 1, level: 1 }, { unique: true });
 
 function arrayLimit(val) {
   return val.length <= 8 && val.length > 0;
