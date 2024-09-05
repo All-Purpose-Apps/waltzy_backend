@@ -58,7 +58,7 @@ export async function deleteDancer(adminDbConnection, req, res) {
       $or: [{ follower: { $in: resultArray } }, { leader: { $in: resultArray } }],
     });
     if (existingEntries.length > 0) {
-      return res.status(400).json({ message: 'Cannot delete dancer as they are part of an Entry' });
+      throw new Error('Cannot delete dancer as they are part of an Entry');
     }
     const dancer = await Dancer.deleteMany({ _id: { $in: resultArray } });
     if (!dancer) {
