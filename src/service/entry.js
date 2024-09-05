@@ -115,9 +115,15 @@ export async function deleteEntry(adminDbConnection, req, res) {
   const resultArray = req.params.id.split(',');
   try {
     const Entry = await adminDbConnection.model('Entry');
-    const deletedEntries = await Entry.deleteMany({ _id: { $in: resultArray } });
-    if (!deletedEntries) {
-      throw new Error('Entry not found');
+    const Heat = await adminDbConnection.model('Heat');
+    const existingHeats = await Heat.find({ entries: { $in: resultArray } });
+    if (existingHeats.length > 0) {
+      throw new Error('Entries are in use in heats');
+    } else {
+      const deletedEntries = await Entry.deleteMany({ _id: { $in: resultArray } });
+      if (!deletedEntries) {
+        throw new Error('Entry not found');
+      }
     }
     const entries = await Entry.find()
       .populate({
