@@ -36,7 +36,7 @@ export async function createHeat(adminDbConnection, req, res) {
         console.log('Insert successful');
       })
       .catch((error) => {
-        if (error.name === 'MongoBulkWriteError' && error.code === 11000) {
+        if (error.code === 11000) {
           console.log('Duplicate keys found, but operation continued.');
         } else {
           console.error('Insert error:', error);
